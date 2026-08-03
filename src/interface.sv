@@ -20,8 +20,6 @@ interface my_if(input logic clk, input logic rst);
 	clocking cb_out_mon@(posedge clk);
 		default input #1 output #1;
 		input RES,COUT,OFLOW,G,E,L,ERR;
-		input OPA,OPB,CE,MODE,CIN,CMD,INP_VALID;
-		input rst;
 	endclocking
 
 	modport DRV(clocking cb_drv);

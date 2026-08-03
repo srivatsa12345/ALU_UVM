@@ -26,14 +26,6 @@ class out_monitor extends uvm_monitor;
 		begin
 			tr=my_transaction::type_id::create("tr");
 			@(vif.cb_out_mon);
-			tr.OPA=vif.cb_out_mon.OPA; 
-			tr.OPB=vif.cb_out_mon.OPB; 
-			tr.CE=vif.cb_out_mon.CE; 
-			tr.MODE=vif.cb_out_mon.MODE; 
-			tr.CIN=vif.cb_out_mon.CIN; 
-			tr.CMD=vif.cb_out_mon.CMD; 
-			tr.INP_VALID=vif.cb_out_mon.INP_VALID;
-			tr.rst=vif.cb_out_mon.rst;
 			tr.RES=vif.cb_out_mon.RES; 
 			tr.COUT=vif.cb_out_mon.COUT; 
 			tr.OFLOW=vif.cb_out_mon.OFLOW; 
