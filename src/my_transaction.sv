@@ -12,8 +12,8 @@ class my_transaction extends uvm_sequence_item;
 		super.new(name);
 	endfunction
 
-	constraint opa{ OPA dist{ 0:=100, [1:(2**`DW)-2]:/1, ((2**`DW)-1):=100};}
-	constraint opb{ OPB dist{ 0:=100, [1:(2**`DW)-2]:/1, ((2**`DW)-1):=100};}
+	constraint opa{ OPA dist{ 0:=100, [1:(2**`DW)-2]:=1, ((2**`DW)-1):=100};}
+	constraint opb{ OPB dist{ 0:=100, [1:(2**`DW)-2]:=1, ((2**`DW)-1):=100};}
 	constraint mode{ MODE inside {0,1};}
 	constraint cmd{ CMD inside {0,(2**`CW)-1};}
 	constraint in_v{ INP_VALID inside {0,3};}
@@ -47,7 +47,7 @@ class cont_arith_op extends my_transaction;
 	endfunction
 		
 	constraint mode{ MODE==1;}
-	constraint cmd{ CMD inside {0,8};}
+	constraint cmd{ CMD inside {[0:8]};}
 	constraint in_v{ INP_VALID==3;}
 	constraint ce{ CE==1;}
 endclass
@@ -60,7 +60,7 @@ class cont_log_op extends my_transaction;
 	endfunction
 		
 	constraint mode{ MODE==0;}
-	constraint cmd{ CMD inside {0,13};}
+	constraint cmd{ CMD inside {[0:13]};}
 	constraint in_v{ INP_VALID==3;}
 	constraint ce{ CE==1;}
 endclass

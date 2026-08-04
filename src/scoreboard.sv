@@ -71,7 +71,7 @@ class scoreboard extends uvm_scoreboard;
 
 		if((!inp.rst)&&(inp.CE)) begin
 			cin=inp.CIN;
-			if(cmd==inp.CMD) c=0; else c=1;
+			if((cmd==inp.CMD)||(mode==inp.MODE)) c=0; else c=1;
 			cmd=inp.CMD;
 			mode=inp.MODE;
 			if(inp.INP_VALID==2'b01) begin
@@ -116,7 +116,7 @@ class scoreboard extends uvm_scoreboard;
 					4'b0000:begin res=opa+opb; cout=res[`DW]; end
 					4'b0001:begin res=opa-opb; oflow=opb>opa; end
 					4'b0010:begin res=opa+opb+cin; cout=res[`DW]; end
-					4'b0011:begin res=opa-opb-cin; oflow=(opb+cin)>opa; end
+					4'b0011:begin res=opa-opb-cin; oflow=((opb>opa)||((opa==opb)&&(cin==1))); end
 					4'b0100:res=(({{`DW{1'b0}},{`DW{1'b1}}})&(opa+1));
 					4'b0101:res=(({{`DW{1'b0}},{`DW{1'b1}}})&(opa-1));
 					4'b0110:res=(({{`DW{1'b0}},{`DW{1'b1}}})&(opb+1));
@@ -174,10 +174,12 @@ class scoreboard extends uvm_scoreboard;
 			end else begin
 				if((inp.MODE!=1)&&(inp.CMD!=4'b1001)&&(inp.CMD!=4'b1010)) countmul=0;
 				if((out.RES!=inp.RES)||(out.COUT!=inp.COUT)||(out.OFLOW!=inp.OFLOW)||(out.G!=inp.G)||(out.E!=inp.E)||(out.L!=inp.L)||(out.ERR!=inp.ERR)) begin
-					`uvm_info("SCOREBOARD",$sformatf("Output from DUT:\n%s\nOutput from REF:\n%s\n",out.sprint(),inp.sprint()),UVM_NONE)
+					//`uvm_info("SCOREBOARD",$sformatf("Output from DUT:\n%s\nOutput from REF:\n%s\n",out.sprint(),inp.sprint()),UVM_NONE)
+					`uvm_info("SCOREBOARD",$sformatf("\nDUT: RES=%0h, COUT=%0h, OFLOW=%0h, G=%0h, E=%0h, L=%0h, ERR=%0h\nREF: RES=%0h, COUT=%0h, OFLOW=%0h, G=%0h, E=%0h, L=%0h, ERR=%0h\n_________________________________________________________________________________________________________________________________________",out.RES,out.COUT,out.OFLOW,out.G,out.E,out.L,out.ERR,inp.RES,inp.COUT,inp.OFLOW,inp.G,inp.E,inp.L,inp.ERR),UVM_NONE) 
 					++MISMATCH;
 				end else begin
-					`uvm_info("SCOREBOARD",$sformatf("Output from DUT:\n%s\nOutput from REF:\n%s\n",out.sprint(),inp.sprint()),UVM_NONE)
+					//`uvm_info("SCOREBOARD",$sformatf("Output from DUT:\n%s\nOutput from REF:\n%s\n",out.sprint(),inp.sprint()),UVM_NONE)
+					`uvm_info("SCOREBOARD",$sformatf("\nDUT: RES=%0h, COUT=%0h, OFLOW=%0h, G=%0h, E=%0h, L=%0h, ERR=%0h\nREF: RES=%0h, COUT=%0h, OFLOW=%0h, G=%0h, E=%0h, L=%0h, ERR=%0h",out.RES,out.COUT,out.OFLOW,out.G,out.E,out.L,out.ERR,inp.RES,inp.COUT,inp.OFLOW,inp.G,inp.E,inp.L,inp.ERR),UVM_NONE) 
 					++MATCH;
 				end
 			end

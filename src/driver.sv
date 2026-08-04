@@ -21,7 +21,8 @@ class driver extends uvm_driver#(my_transaction);
 	endtask
 	task drive(my_transaction tr);
 		begin
-			`uvm_info("DRIVER",$sformatf("DRV:\n%s",tr.sprint()),UVM_NONE)
+			//`uvm_info("DRIVER",$sformatf("DRV:\n%s",tr.sprint()),UVM_NONE)
+			`uvm_info("DRIVER",$sformatf("\nDRV: OPA=%0h, OPB=%0h, CE=%0h, MODE=%0h, CIN=%0h, CMD=%0h, INP_VALID=%0h\n",tr.OPA,tr.OPB,tr.CE,tr.MODE,tr.CIN,tr.CMD,tr.INP_VALID),UVM_NONE) 
 			@(vif.cb_drv);
 			vif.cb_drv.OPA<=tr.OPA; 
 			vif.cb_drv.OPB<=tr.OPB; 

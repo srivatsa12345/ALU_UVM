@@ -34,7 +34,8 @@ class in_monitor extends uvm_monitor;
 			tr.CMD=vif.cb_in_mon.CMD; 
 			tr.INP_VALID=vif.cb_in_mon.INP_VALID;
 			tr.rst=vif.cb_in_mon.rst;
-			`uvm_info("INPUT_MONITOR",$sformatf("Input MONITOR\n%s",tr.sprint()),UVM_NONE)
+			//`uvm_info("INPUT_MONITOR",$sformatf("Input MONITOR\n%s",tr.sprint()),UVM_NONE)
+			`uvm_info("INPUT_MONITOR",$sformatf("\nI_M: OPA=%0h, OPB=%0h, CE=%0h, MODE=%0h, CIN=%0h, CMD=%0h, INP_VALID=%0h RST=%0h",tr.OPA,tr.OPB,tr.CE,tr.MODE,tr.CIN,tr.CMD,tr.INP_VALID,tr.rst),UVM_NONE) 
 			ap.write(tr);
 		end
 	endtask

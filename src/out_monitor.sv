@@ -33,7 +33,8 @@ class out_monitor extends uvm_monitor;
 			tr.E=vif.cb_out_mon.E; 
 			tr.L=vif.cb_out_mon.L; 
 			tr.ERR=vif.cb_out_mon.ERR;
-			`uvm_info("OUTPUT_MONITOR",$sformatf("Output MONITOR\n%s",tr.sprint()),UVM_NONE)
+			//`uvm_info("OUTPUT_MONITOR",$sformatf("Output MONITOR\n%s",tr.sprint()),UVM_NONE)
+			`uvm_info("OUT_MONITOR",$sformatf("\nO_M: RES=%0h, COUT=%0h, OFLOW=%0h, G=%0h, E=%0h, L=%0h, ERR=%0h",tr.RES,tr.COUT,tr.OFLOW,tr.G,tr.E,tr.L,tr.ERR),UVM_NONE) 
 			ap.write(tr);
 		end
 	endtask

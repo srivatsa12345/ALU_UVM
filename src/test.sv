@@ -17,6 +17,7 @@ class test extends uvm_test;
 		phase.raise_objection(this);
 		seq=sequences::type_id::create("seq");
 		seq.start(env.a_ag.sqr);
+		#20;
 		env.sc.compare_results();
 		phase.drop_objection(this);
 	endtask
