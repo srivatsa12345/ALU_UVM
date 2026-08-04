@@ -70,7 +70,6 @@ class scoreboard extends uvm_scoreboard;
 		c=0;
 
 		if((!inp.rst)&&(inp.CE)) begin
-			cin=inp.CIN;
 			if((cmd==inp.CMD)||(mode==inp.MODE)) c=0; else c=1;
 			cmd=inp.CMD;
 			mode=inp.MODE;
@@ -110,6 +109,7 @@ class scoreboard extends uvm_scoreboard;
 		end
 		
 		if((inp.CE)&&(!inp.rst)&&(v==1)&&(err!=1)) begin
+			cin=inp.CIN;
 			res=0;cout=0;oflow=0;g=0;e=0;l=0;err=0;
 			if(mode) begin
 				case(cmd)
@@ -161,10 +161,12 @@ class scoreboard extends uvm_scoreboard;
 		++TOTAL;
 		if(inp.rst==1'b1) begin
 			if((out.RES!=0)||(out.COUT!=0)||(out.OFLOW!=0)||(out.G!=0)||(out.E!=0)||(out.L!=0)||(out.ERR!=0)) begin
-				`uvm_info("SCOREBOARD",$sformatf("Output from DUT:\n%s",out.sprint()),UVM_NONE)
+				//`uvm_info("SCOREBOARD",$sformatf("Output from DUT:\n%s",out.sprint()),UVM_NONE)
+				`uvm_info("SCOREBOARD",$sformatf("\nDUT: RES=%0h, COUT=%0h, OFLOW=%0h, G=%0h, E=%0h, L=%0h, ERR=%0h\nREF: RES=%0h, COUT=%0h, OFLOW=%0h, G=%0h, E=%0h, L=%0h, ERR=%0h\n_________________________________________________________________________________________________________________________________________",out.RES,out.COUT,out.OFLOW,out.G,out.E,out.L,out.ERR,inp.RES,inp.COUT,inp.OFLOW,inp.G,inp.E,inp.L,inp.ERR),UVM_NONE) 
 				++MISMATCH;
 			end else begin
-				`uvm_info("SCOREBOARD",$sformatf("Output from DUT:\n%s",out.sprint()),UVM_NONE)
+				//`uvm_info("SCOREBOARD",$sformatf("Output from DUT:\n%s",out.sprint()),UVM_NONE)
+				`uvm_info("SCOREBOARD",$sformatf("\nDUT: RES=%0h, COUT=%0h, OFLOW=%0h, G=%0h, E=%0h, L=%0h, ERR=%0h\nREF: RES=%0h, COUT=%0h, OFLOW=%0h, G=%0h, E=%0h, L=%0h, ERR=%0h",out.RES,out.COUT,out.OFLOW,out.G,out.E,out.L,out.ERR,inp.RES,inp.COUT,inp.OFLOW,inp.G,inp.E,inp.L,inp.ERR),UVM_NONE) 
 				++MATCH;
 			end
 		end else begin
