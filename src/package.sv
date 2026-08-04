@@ -2,8 +2,8 @@ package pkg;
 	`define DW 8
 	`define CW 4
 	`define n 100
-  	`include "uvm_macros.svh"
   	import uvm_pkg::*;
+  	`include "uvm_macros.svh"
   	`include "my_transaction.sv"
   	`include "sequencer.sv"
   	`include "sequences.sv"

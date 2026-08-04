@@ -2,9 +2,8 @@
 `include "interface.sv"
 `include "DUT.sv"
 module top;
-	import uvm_pkg::*;
 	import pkg::*;
-	
+  	import uvm_pkg::*;
 	bit clk,rst;
 	always #5 clk=~clk;
 	initial begin

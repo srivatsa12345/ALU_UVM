@@ -6,12 +6,11 @@ class scoreboard extends uvm_scoreboard;
 	my_transaction inp_mon;
 	my_transaction out_mon;
 
-
-	int MATCH,MISMATCH,TOTAL,count;
+	int MATCH,MISMATCH,TOTAL,counta,countb;
 	bit[`DW-1:0]opa,opb;
      	bit[`CW-1:0]cmd;
-     	bit signed [`DW*2-1:0]res,inter1,inter2;
-	bit cin,mode,cout,oflow,g,e,l,err,v,count9,count10,f;
+     	bit signed [`DW*2-1:0]res,inter;
+	bit cin,mode,cout,oflow,g,e,l,err,v,countmul,f,c;
 
 	function new(string name, uvm_component parent);
 		super.new(name,parent);
@@ -57,7 +56,7 @@ class scoreboard extends uvm_scoreboard;
 			l=0;
 			err=0;
 			v=0;
-			count=0;
+			counta=0;countb=0;
 		end 
 
 		inp.RES=res;
@@ -67,27 +66,35 @@ class scoreboard extends uvm_scoreboard;
 		inp.E=e;
 		inp.L=l;
 		inp.ERR=err;
+		err=0;
+		c=0;
 
 		if((!inp.rst)&&(inp.CE)) begin
 			cin=inp.CIN;
+			if(cmd==inp.CMD) c=0; else c=1;
 			cmd=inp.CMD;
 			mode=inp.MODE;
 			if(inp.INP_VALID==2'b01) begin
 				opa=inp.OPA;
-				if ((count>0)&&(v==0)) begin count=0;v=1; end else begin count++; v=0; end
+				if (c==1) begin countb=1; c=0; v=0; end 
+				else if((counta>0)&&(v==0)) begin counta=0;v=1; end else begin countb++; v=0; end
 			end else if (inp.INP_VALID==2'b10) begin
 				opb=inp.OPB;
-				if ((count>0)&&(v==0)) begin count=0;v=1; end else begin count++; v=0; end
+				if (c==1) begin counta=1; c=0; v=0; end 
+				else if ((countb>0)&&(v==0)) begin countb=0;v=1; end else begin counta++; v=0; end
 			end else if (inp.INP_VALID==2'b11) begin
 				opa=inp.OPA;
 				opb=inp.OPB;
-				if(count>0) begin count=0; end
+				if (c==1) begin c=0; end
+				counta=0;countb=0;
 				v=1;
 			end else begin
-				if(count>0) count++;
+				if(c==1) begin res=0; cout=0; oflow=0; g=0; e=0; l=0; err=0; counta=0;countb=0; end
+				if(counta>0) counta++; else if(countb>0) countb++;
 			end	
-			if (count==17) begin
-				count=0;
+			if ((counta==17)||(countb==17)) begin
+				counta=0;
+				countb=0;
 				opa=0;
 				opb=0;
 				cin=0;
@@ -99,7 +106,7 @@ class scoreboard extends uvm_scoreboard;
 				l=0;
 				err=1;
 				v=0;
-			end else err=0;
+			end 
 		end
 		
 		if((inp.CE)&&(!inp.rst)&&(v==1)&&(err!=1)) begin
@@ -115,9 +122,9 @@ class scoreboard extends uvm_scoreboard;
 					4'b0110:res=(({{`DW{1'b0}},{`DW{1'b1}}})&(opb+1));
 					4'b0111:res=(({{`DW{1'b0}},{`DW{1'b1}}})&(opb-1));
 					4'b1000:begin g=(opa>opb); e=(opa==opb); l=(opa<opb); end
-					4'b1001:begin res=inter1; inter1=(opa+1)*(opb+1); end
-					4'b1010:begin res=inter2; inter2=(opa<<1)*opb; end
-					default:begin res=0;cout=0;oflow=0;g=0;e=0;l=0;err=0; end
+					4'b1001:begin res=inter; inter=(opa+1)*(opb+1); end
+					4'b1010:begin res=inter; inter=(opa<<1)*opb; end
+					default:begin res=0;cout=0;oflow=0;g=0;e=0;l=0;err=1; end
 				endcase
 			end else begin
 				case(cmd)
@@ -145,7 +152,7 @@ class scoreboard extends uvm_scoreboard;
 							err=1;
 						end else res=(({{`DW{1'b0}},{`DW{1'b1}}})&((opa>>opb[$clog2(`DW)-1:0])|(opa<<(`DW-opb[$clog2(`DW)-1:0]))));
 					end
-					default:begin res=0;cout=0;oflow=0;g=0;e=0;l=0;err=0; end
+					default:begin res=0;cout=0;oflow=0;g=0;e=0;l=0;err=1; end
 				endcase
 			end
 		end		
@@ -161,12 +168,11 @@ class scoreboard extends uvm_scoreboard;
 				++MATCH;
 			end
 		end else begin
-			if (((inp.MODE==1)&&(inp.CMD==4'b1001)&&(count9==0))||((inp.MODE==1)&&(inp.CMD==4'b1010)&&(count10==0))) begin
-				if (inp.CMD==4'b1001) if (count9==0) count9=1;
-				if (inp.CMD==4'b1010) if (count10==0) count10=1;
+			if ((inp.MODE==1)&&(countmul==0)&&((inp.CMD==4'b1001)||(inp.CMD==4'b1010))) begin
+				countmul=1;
+				`uvm_info("SCOREBOARD","Multipliaction second cycle ignored",UVM_NONE)
 			end else begin
-				if((inp.MODE!=1)&&(inp.CMD!=4'b1001))count9=0;
-				if((inp.MODE!=1)&&(inp.CMD!=4'b1010))count10=0;
+				if((inp.MODE!=1)&&(inp.CMD!=4'b1001)&&(inp.CMD!=4'b1010)) countmul=0;
 				if((out.RES!=inp.RES)||(out.COUT!=inp.COUT)||(out.OFLOW!=inp.OFLOW)||(out.G!=inp.G)||(out.E!=inp.E)||(out.L!=inp.L)||(out.ERR!=inp.ERR)) begin
 					`uvm_info("SCOREBOARD",$sformatf("Output from DUT:\n%s\nOutput from REF:\n%s\n",out.sprint(),inp.sprint()),UVM_NONE)
 					++MISMATCH;

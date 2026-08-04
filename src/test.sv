@@ -8,6 +8,7 @@ class test extends uvm_test;
 
 	function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
+		my_transaction::type_id::set_type_override(cont_arith_op::get_type());
 		env=environment::type_id::create("env",this);
 	endfunction
 
