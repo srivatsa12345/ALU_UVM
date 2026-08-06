@@ -218,3 +218,34 @@ class wait_rand_cycles_w_mcmd_16 extends my_transaction;
 	endfunction	
 endclass
 
+class wait_rand_cycles_w_more_16 extends my_transaction;
+	`uvm_object_utils(wait_rand_cycles_w_more_16)
+
+	function new (string name="wait_rand_cycles_w_more_16");
+		super.new(name);
+	endfunction
+
+	constraint wait_cyc{ delay>16;}
+	constraint in_v{ INP_VALID inside {[0:2]};}
+
+	function void post_randomize();
+		if ((INP_VALID!=0)&&(count==0)) begin
+			delay_hold=delay;
+			count++;
+			Inv_hold=INP_VALID;
+			m=MODE;
+			cmd_h=CMD;
+		end else if (count==delay_hold) begin
+			count=0;
+			INP_VALID=~(Inv_hold);
+			MODE=m;
+			CMD=cmd_h;
+		end else if (count!=0) begin
+			count++;
+			INP_VALID=Inv_hold;
+			MODE=m;
+			CMD=cmd_h;
+		end
+	endfunction	
+endclass
+

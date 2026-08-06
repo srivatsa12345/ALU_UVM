@@ -32,6 +32,8 @@ class test extends uvm_test;
 		run();
 		my_transaction::type_id::set_type_override(wait_rand_cycles_w_mcmd_16::get_type());
 		run();
+		my_transaction::type_id::set_type_override(wait_rand_cycles_w_more_16::get_type());
+		run();
 		#20;
 		env.sc.compare_results();
 		phase.drop_objection(this);
