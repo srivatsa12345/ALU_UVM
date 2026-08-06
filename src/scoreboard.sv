@@ -3,9 +3,6 @@ class scoreboard extends uvm_scoreboard;
 	uvm_tlm_analysis_fifo #(my_transaction) in_fifo;
 	uvm_tlm_analysis_fifo #(my_transaction) out_fifo;
 
-	my_transaction inp_mon;
-	my_transaction out_mon;
-
 	int MATCH,MISMATCH,TOTAL,counta,countb;
 	bit[`DW-1:0]opa,opb;
      	bit[`CW-1:0]cmd;
