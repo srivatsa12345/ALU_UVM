@@ -3,6 +3,7 @@ class environment extends uvm_env;
 	act_agent a_ag;
 	pass_agent p_ag;
 	scoreboard sc;
+	subscriber sub;
 
 	function new(string name, uvm_component parent);
 		super.new(name,parent);
@@ -13,11 +14,13 @@ class environment extends uvm_env;
 		a_ag=act_agent::type_id::create("a_ag",this);
 		p_ag=pass_agent::type_id::create("p_ag",this);
 		sc=scoreboard::type_id::create("sc",this);
+		sub=subscriber::type_id::create("sub",this);
 	endfunction
 
 	function void connect_phase(uvm_phase phase);
 		a_ag.in_mon.ap.connect(sc.in_fifo.analysis_export);
 		p_ag.out_mon.ap.connect(sc.out_fifo.analysis_export);
+		a_ag.in_mon.ap.connect(sub.analysis_export);
 	endfunction
 
 endclass

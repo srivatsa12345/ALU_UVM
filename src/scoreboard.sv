@@ -33,9 +33,9 @@ class scoreboard extends uvm_scoreboard;
 			end
 		end
 	endtask
-	task compare_results();
+	function void compare_results();
 		`uvm_info("SCOREBOARD",$sformatf("Total clock Cycles Checked:%0d\n Total cycles matched:%0d\n Total cycles failes:%0d",TOTAL,MATCH,MISMATCH),UVM_NONE);
-	endtask
+	endfunction
 
 	task ref_model(my_transaction inp);
 	

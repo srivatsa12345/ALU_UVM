@@ -12,6 +12,11 @@ class test extends uvm_test;
 		env=environment::type_id::create("env",this);
 	endfunction
 
+	function void end_of_elaboration_phase(uvm_phase phase);
+		super.end_of_elaboration_phase(phase);
+		uvm_top.print_topology();
+	endfunction
+
 	task run_phase(uvm_phase phase);
 		phase.raise_objection(this);
 		my_transaction::type_id::set_type_override(cont_arith_op::get_type());
@@ -34,10 +39,14 @@ class test extends uvm_test;
 		run();
 		my_transaction::type_id::set_type_override(wait_rand_cycles_w_more_16::get_type());
 		run();
-		#20;
-		env.sc.compare_results();
+		phase.phase_done.set_drain_time(this,20);
 		phase.drop_objection(this);
 	endtask
+
+	function void report_phase(uvm_phase phase);
+		super.report_phase(phase);
+		env.sc.compare_results();
+	endfunction
 
 	task run();
 		seq=sequences::type_id::create("seq");

@@ -1,10 +1,10 @@
 class my_transaction extends uvm_sequence_item;
-	rand bit [`DW-1:0] OPA, OPB; 
-	rand bit CE, MODE, CIN;
-	rand bit [`CW-1:0] CMD;
-	rand bit [1:0] INP_VALID;
-	bit signed [`DW*2-1:0] RES;
-	bit COUT, OFLOW, G, E, L, ERR;
+	rand logic [`DW-1:0] OPA, OPB; 
+	rand logic CE, MODE, CIN;
+	rand logic [`CW-1:0] CMD;
+	rand logic [1:0] INP_VALID;
+	logic signed [`DW*2-1:0] RES;
+	logic COUT, OFLOW, G, E, L, ERR;
 	
 	logic rst;
 
@@ -19,8 +19,8 @@ class my_transaction extends uvm_sequence_item;
 		super.new(name);
 	endfunction
 
-	constraint opa{ OPA dist{ 0:=100, [1:(2**`DW)-2]:=1, ((2**`DW)-1):=100};}
-	constraint opb{ OPB dist{ 0:=100, [1:(2**`DW)-2]:=1, ((2**`DW)-1):=100};}
+	constraint opa{ OPA dist{ 0:=150, [1:25]:=5, [26:(2**`DW)-26]:=1, [(2**`DW)-25:((2**`DW)-2)]:=5, ((2**`DW)-1):=150};}
+	constraint opb{ OPB dist{ 0:=150, [1:25]:=5, [26:(2**`DW)-26]:=1, [(2**`DW)-25:((2**`DW)-2)]:=5, ((2**`DW)-1):=150};}
 	constraint mode{ MODE inside {0,1};}
 	constraint cmd{ CMD inside {0,(2**`CW)-1};}
 	constraint in_v{ INP_VALID inside {0,3};}
@@ -131,16 +131,15 @@ class wait_rand_cycles extends my_transaction;
 	endfunction
 
 	constraint wait_cyc{ delay inside {[0:14]};}
-	constraint in_v{ INP_VALID inside {[0:2]};}
 
 	function void post_randomize();
-		if ((m!=MODE)&&(cmd_h!=CMD)) begin
+		if ((m!=MODE)&&(cmd_h!=CMD)&&(INP_VALID!=3)) begin
 			delay_hold=delay;
 			count=1;
 			Inv_hold=INP_VALID;	
 			m=MODE;
 			cmd_h=CMD;
-		end else if ((INP_VALID!=0)&&(count==0)) begin
+		end else if ((INP_VALID!=0)&&(count==0)&&(INP_VALID!=3)) begin
 			delay_hold=delay;
 			count++;
 			Inv_hold=INP_VALID;

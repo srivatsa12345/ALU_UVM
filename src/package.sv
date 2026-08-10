@@ -1,8 +1,6 @@
 package pkg;
-	`define DW 8
-	`define CW 4
-	`define n 500
-  	import uvm_pkg::*;
+  	`include "defines.svh"
+	import uvm_pkg::*;
   	`include "uvm_macros.svh"
   	`include "my_transaction.sv"
   	`include "sequencer.sv"
@@ -10,6 +8,7 @@ package pkg;
   	`include "driver.sv"
   	`include "in_monitor.sv"
   	`include "out_monitor.sv"
+	`include "subscriber.sv"
   	`include "act_agent.sv"
   	`include "pass_agent.sv"
   	`include "scoreboard.sv"
