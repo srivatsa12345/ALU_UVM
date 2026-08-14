@@ -171,7 +171,7 @@ class scoreboard extends uvm_scoreboard;
 				countmul=1;
 				`uvm_info("SCOREBOARD","Multipliaction second cycle ignored",UVM_NONE)
 			end else begin
-				if((inp.MODE!=1)&&(inp.CMD!=4'b1001)&&(inp.CMD!=4'b1010)) countmul=0;
+				if((inp.MODE!=1)||((inp.MODE==1)&&(inp.CMD!=4'b1001)&&(inp.CMD!=4'b1010))) countmul=0;
 				if((out.RES!=inp.RES)||(out.COUT!=inp.COUT)||(out.OFLOW!=inp.OFLOW)||(out.G!=inp.G)||(out.E!=inp.E)||(out.L!=inp.L)||(out.ERR!=inp.ERR)) begin
 					//`uvm_info("SCOREBOARD",$sformatf("Output from DUT:\n%s\nOutput from REF:\n%s\n",out.sprint(),inp.sprint()),UVM_NONE)
 					`uvm_info("SCOREBOARD",$sformatf("\nDUT: RES=%0h, COUT=%0h, OFLOW=%0h, G=%0h, E=%0h, L=%0h, ERR=%0h\nREF: RES=%0h, COUT=%0h, OFLOW=%0h, G=%0h, E=%0h, L=%0h, ERR=%0h\n_________________________________________________________________________________________________________________________________________",out.RES,out.COUT,out.OFLOW,out.G,out.E,out.L,out.ERR,inp.RES,inp.COUT,inp.OFLOW,inp.G,inp.E,inp.L,inp.ERR),UVM_NONE) 
