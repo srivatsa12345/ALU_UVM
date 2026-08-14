@@ -67,7 +67,7 @@ class scoreboard extends uvm_scoreboard;
 		c=0;
 
 		if((!inp.rst)&&(inp.CE)) begin
-			if((cmd==inp.CMD)||(mode==inp.MODE)) c=0; else c=1;
+			if((cmd==inp.CMD)&&(mode==inp.MODE)) c=0; else c=1;
 			cmd=inp.CMD;
 			mode=inp.MODE;
 			if(inp.INP_VALID==2'b01) begin
